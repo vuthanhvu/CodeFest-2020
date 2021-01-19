@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Codefest-2020</title>
+    <script src="socket.io.min.js"></script>
+    <script src='./convertMove.js'></script>
+    <script src='./leakBomb.js'></script>
+    <script src='./leakBombFind.js'></script>
+    <script src='./findBfs.js'></script>
+    <script src='./eatFood.js'></script>
+    <style>
+        div{
+            margin:40px 0 0 40px;
+        }
+        label{
+            color: red;
+            font-size: 20px;
+            font-weight: 900;
+        }
+        p{
+            color: teal;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="color:salmon">Codefest</h1>
+        
+        <p>Server connecting: <label id="connect">N/A</label></p>
+        <p>Socket: <label id="socket">N/A</label></p>
+        <p>Joined game: <label id="joingame" >N/A</label></p>
+        <p>Ticktack game: <label id="ticktack">N/A</label></p>
+        <script src="main.js"></script>
+    </div>
+</body>
+</html>
