@@ -36,7 +36,41 @@ function leakBombs(graph){
     //add bombs
     for (let item of bombs){
         closedList[item.row][item.col] = 8;
-        if(item.remainTime < 1000){
+        if( 200 < item.remainTime < 1000){
+            if(item.playerId == playerId){
+                for( let i=1; i < powerMe+1; i++){
+                    if(item.col-i > 0){
+                        closedList[item.row][item.col-i] = 9;
+                    }
+                    if(item.col+i < 25){
+                        closedList[item.row][item.col+i] = 9;
+                    }
+                    if(item.row-i > 0){
+                        closedList[item.row-i][item.col] = 9;
+                    }
+                    if(item.row+i < 13){
+                        closedList[item.row+i][item.col] = 9;
+                    }
+                }
+            }else {
+                for( let i=1; i < powerBoss+1; i++){
+                    if(item.col-i > 0){
+                        closedList[item.row][item.col-i] = 9;
+                    }
+                    if(item.col+i < 25){
+                        closedList[item.row][item.col+i] = 9;
+                    }
+                    if(item.row-i > 0){
+                        closedList[item.row-i][item.col] = 9;
+                    }
+                    if(item.row+i < 13){
+                        closedList[item.row+i][item.col] = 9;
+                    }
+                }
+            }
+        }
+
+        if( item.remainTime < 200){
             if(item.playerId == playerId){
                 for( let i=1; i < powerMe+1; i++){
                     if(item.col-i > 0){
@@ -95,22 +129,22 @@ function leakBombs(graph){
         closedList[n.point.row][n.point.col] = 1;
         //Add adjacent nodes to openList to be processed.
         if(n.point.col-1 > 0){
-            if(closedList[n.point.row][n.point.col-1] == 0 && map[n.point.row][n.point.col-1] == 0){
+            if((closedList[n.point.row][n.point.col-1] == 0 || closedList[n.point.row][n.point.col-1] == 9) && map[n.point.row][n.point.col-1] == 0){
                 n.children.unshift(new Node(n,new Point(n.point.row,n.point.col-1),new Array()));
             }
         }       
         if(n.point.row+1 < 13){
-            if(closedList[n.point.row+1][n.point.col] == 0 &&  map[n.point.row+1][n.point.col] == 0){
+            if((closedList[n.point.row+1][n.point.col] == 0 || closedList[n.point.row+1][n.point.col] == 9) &&  map[n.point.row+1][n.point.col] == 0){
                 n.children.unshift(new Node(n,new Point(n.point.row+1,n.point.col),new Array()));
             }
         }
         if(n.point.col+1 < 25){
-            if(closedList[n.point.row][n.point.col+1] == 0 && map[n.point.row][n.point.col+1] == 0){
+            if((closedList[n.point.row][n.point.col+1] == 0 || closedList[n.point.row][n.point.col+1] == 9) && map[n.point.row][n.point.col+1] == 0){
                 n.children.unshift(new Node(n,new Point(n.point.row,n.point.col+1),new Array()));
             }
         }
         if(n.point.row-1 > 0){
-            if(closedList[n.point.row-1][n.point.col] == 0 && map[n.point.row-1][n.point.col] == 0){
+            if((closedList[n.point.row-1][n.point.col] == 0 || closedList[n.point.row-1][n.point.col] == 9) && map[n.point.row-1][n.point.col] == 0){
                 n.children.unshift(new Node(n,new Point(n.point.row - 1,n.point.col),new Array()));
             }
         }

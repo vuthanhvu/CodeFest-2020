@@ -1,14 +1,14 @@
 //require socket io 
 
-const gameId = 'a2e81265-e4f4-4b98-8ffb-f53b866a0540';
-const playerId = 'player1-xxx';
+const gameId = 'a992118d-edb3-4843-b373-16d65ef935cb';
+const playerId = 'player2-xxx';
 
 // const playerIdGame = "8967ed73-136a-432f-ad01-2ababe144899";
 // const playerId = "8967ed73-136a"
 
 //connect to API app server
-//const apiServer = 'http://172.27.48.67:5000';
-const apiServer = 'https://codefest.techover.io/';
+const apiServer = 'http://172.27.48.67:5000/';
+// const apiServer = 'https://codefest.techover.io/';
 const socket = io.connect(apiServer, { reconnect: true, transports: ['websocket']});
 
 //Join game
@@ -45,7 +45,7 @@ socket.on('join game', (res) => {
 socket.on('ticktack player', (res) => {
     document.getElementById('ticktack').innerHTML ='ON';
     
-    // console.log("start1");
+    console.log("start1", res.tag, res.player_id);
     let direction = '';
     let eatRoad = '';
     let findRoadOb = '';
@@ -64,9 +64,14 @@ socket.on('ticktack player', (res) => {
                     direction = findRoad + bombRoad;
                 }else{
                     direction = leakBombs(res.map_info);
+                    console.log('leakboms1:', direction);
                 }
+            }else{
+                direction = leakBombs(res.map_info);
+                console.log('leakboms1:', direction);
             }
-            // console.log("startGame: ", direction);
+
+            console.log("startGame: ", direction);
         }else {
            eatRoad = eatFood(res.map_info);
            findRoadOb = findBfs(res.map_info);
@@ -77,16 +82,32 @@ socket.on('ticktack player', (res) => {
                 console.log('leakBomb2', direction); 
            }else if (findRoad == 'x') {
                 direction = eatRoad;
-           }else{
+                console.log('eat1', direction);
+           }else if (eatRoad == 'x'){
                 bombRoad = leakBombsFind(res.map_info, findRoadOb.end);
-                direction = findRoad + bombRoad;
                 if(bombRoad != 'x'){
                     direction = findRoad + bombRoad;
-                    console.log('find', direction); 
+                    console.log('find', direction);
                 }else{
                     direction = leakBombs(res.map_info);
-                    console.log('leakBomb111', direction); 
+                    console.log('leakboms3:', direction);
                 }
+            }else {
+                if(eatRoad.length - findRoad.length < 5){
+                    direction = eatRoad;
+                    console.log('eat2', direction);
+                }else{
+                    bombRoad = leakBombsFind(res.map_info, findRoadOb.end);
+                    direction = findRoad + bombRoad;
+                    if(bombRoad != 'x'){
+                        direction = findRoad + bombRoad;
+                        console.log('find', direction);
+                    }else{
+                        direction = leakBombs(res.map_info);
+                        console.log('leakboms3:', direction);
+                    }
+                }
+                
             }
         }
     }

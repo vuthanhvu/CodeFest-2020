@@ -1,3 +1,20 @@
+function removeBomb(direction, pill){
+    let bombLength = ((direction.length >= pill) ? pill : (direction.length));
+    let item = 0;
+    let i = 1;
+    while(i < bombLength){
+      let x1 = direction.substr(-i,1);
+      let x2 = direction.substr(-i-1,1);
+      if(x1==x2){
+        item++;
+        i++;
+      }else{
+        break;
+      }
+    };
+    return item;
+}
+
 function findBfs(graph){
     const { map, size, players, bombs, viruses, human} = graph;
     let direction = '';
@@ -29,6 +46,8 @@ function findBfs(graph){
             closedList[i][j] = 0;
         }
     }
+    //add position Boss
+    closedList[posBoss.row][posBoss.col] = 8;
 
     //add viruses
     if(pillMe < 2 && viruses.length != 0){
@@ -82,9 +101,6 @@ function findBfs(graph){
             
         }
     }
-
-    //add position Boss
-    closedList[posBoss.row][posBoss.col] = 2;
 
     //add bomb
     if(bombs.length != 0){
@@ -151,22 +167,22 @@ function findBfs(graph){
         closedList[n.point.row][n.point.col] = 1;
         //Add adjacent nodes to openList to be processed.
         if(n.point.col-1 > 0){
-            if((closedList[n.point.row][n.point.col-1] == 0 || closedList[n.point.row][n.point.col-1] == 2) &&  (map[n.point.row][n.point.col-1] == 0 || map[n.point.row][n.point.col-1] == 2)){
+            if((closedList[n.point.row][n.point.col-1] == 0) &&  (map[n.point.row][n.point.col-1] == 0 || map[n.point.row][n.point.col-1] == 2)){
                 n.children.unshift(new Node(n,new Point(n.point.row,n.point.col-1),new Array()));
             }
         }
         if(n.point.row+1 < 13){
-            if((closedList[n.point.row+1][n.point.col] == 0 || closedList[n.point.row+1][n.point.col] == 2) &&  (map[n.point.row+1][n.point.col] == 0 || map[n.point.row+1][n.point.col] == 2)){
+            if((closedList[n.point.row+1][n.point.col] == 0) &&  (map[n.point.row+1][n.point.col] == 0 || map[n.point.row+1][n.point.col] == 2)){
                 n.children.unshift(new Node(n,new Point(n.point.row+1,n.point.col),new Array()));
             }
         }
         if(n.point.col+1 < 25){
-            if((closedList[n.point.row][n.point.col+1] == 0 || closedList[n.point.row][n.point.col+1] == 2) && (map[n.point.row][n.point.col+1] == 0 || map[n.point.row][n.point.col+1] == 2)){
+            if((closedList[n.point.row][n.point.col+1] == 0) && (map[n.point.row][n.point.col+1] == 0 || map[n.point.row][n.point.col+1] == 2)){
                 n.children.unshift(new Node(n,new Point(n.point.row,n.point.col+1),new Array()));
             }
         }
         if(n.point.row-1 > 0){
-            if((closedList[n.point.row-1][n.point.col] == 0 || closedList[n.point.row-1][n.point.col] == 2) && (map[n.point.row-1][n.point.col] == 0 || map[n.point.row][n.point.col-1] == 2)){
+            if((closedList[n.point.row-1][n.point.col] == 0) && (map[n.point.row-1][n.point.col] == 0 || map[n.point.row][n.point.col-1] == 2)){
                 n.children.unshift(new Node(n,new Point(n.point.row - 1,n.point.col),new Array()));
             }
         }
@@ -182,9 +198,14 @@ function findBfs(graph){
     if(findRoad == 'x'){
         direction = 'x';
     }else{
-
-        end = moves[moves.length - 2];
-        direction = findRoad.slice(0, -1) + 'b';
+        if(pillMe > 1){
+            let item = removeBomb(findRoad, pillMe);
+            end = moves[moves.length - 2 - item];
+            direction = findRoad.substring(0, findRoad.length - item).slice(0, -1) + 'b';
+        }else {
+            end = moves[moves.length - 2];
+            direction = findRoad.slice(0, -1) + 'b';
+        }
     }
  
     return {end, direction};
